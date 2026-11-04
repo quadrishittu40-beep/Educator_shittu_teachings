@@ -1,29 +1,33 @@
-# Educator's Desk — Teacher Management App
+# Educator's Desk — Firebase Cloud Backup Edition
 
-A static, mobile-friendly teacher management workspace for Educator Shittu Quadri Adeshina.
+Static, GitHub Pages-compatible teacher workspace for Educator Shittu Quadri Adeshina.
 
-## Included workspaces
-- 9 subjects across the specified class levels (45 subject/class workspaces).
-- Each workspace has independent Schemes of Work, Lesson Notes, Assignments, Tests & Examinations, Evaluation & Reflection, Attendance, Teaching Resources, Lesson Delivery Log, Revision & Question Bank, and Student Results.
-- Global student register, timetable, academic calendar, professional development records, teacher profile, search, print, JSON backup and restore.
+## Included
+- Existing dashboard, 45 subject/class workspaces and teaching tools.
+- Teacher profile with portrait; profile navigation and save behaviour repaired.
+- Firebase Authentication (Email/Password) sign-in and account creation.
+- Cloud Firestore manual backup and restore.
+- Debounced automatic cloud backup after local data changes while signed in.
+- Existing local JSON backup/restore retained.
+- App icons, favicon and web manifest.
 
-## Subject/class allocation
-- Basic Science, Civic Education, Social Studies: JSS 1, JSS 2, JSS 3 only.
-- Islamic Studies, Arabic Language, Tajweed (التجويد), Imlā' (الإملاء), Nahw (النحو), Sarf (الصرف): JSS 1–3 and SS 1–3.
+## Publish
+Upload the contents of this ZIP to the root of your GitHub Pages repository. Keep the `assets` folder and `manifest.webmanifest` beside `index.html`.
 
-## Run locally
-Open `index.html` in a modern browser. No Node.js, server, package installation, or build step is required.
+## First use
+1. Open the published site using HTTPS.
+2. Open **Firebase Cloud Backup** in the left navigation.
+3. Sign in with the email/password user already created in Firebase Authentication.
+4. Choose **Back Up Now** for the first cloud backup. Automatic backups are attempted after later changes while signed in.
+5. Use **Restore from Cloud** to restore the latest backup on another browser/device. Download a local JSON backup before restoring.
 
-## Publish with GitHub Pages
-1. Create or open a GitHub repository.
-2. Upload `index.html` and this README to the repository root.
-3. Open repository **Settings → Pages**.
-4. Under Build and deployment, choose **Deploy from a branch**.
-5. Select the `main` branch and `/ (root)` folder, then Save.
-6. Wait for GitHub Pages to publish and open the generated site URL.
+## Firebase configuration and security
+The Firebase web app configuration is embedded in `index.html` and is intended for browser use. Firebase web API keys are not server secrets; security must be enforced by Authentication and Firestore Security Rules.
 
-## Data storage and backup — important
-This version stores information in the browser's `localStorage`. Data remains in that browser profile on that device; it does **not** automatically synchronize between phones, computers, or different browsers. Clearing browser/site data may erase records. Use **Backup Data** regularly to download a JSON backup. Use **Restore Backup** on the target browser/device to restore it. Keep backup files somewhere safe.
+The app writes one document at `users/{authenticated-uid}/backups/latest`. The Firestore rules must allow an authenticated user to read/write only their own `users/{uid}/backups/{backupId}` documents. The owner UID configured in Firebase Authentication must match the signed-in account. Never publish service-account private keys or Admin SDK credentials in this static app.
 
-## Privacy
-Student and teacher information entered into the app is stored in the browser on the device. Do not enter sensitive student information on a shared or public device. GitHub Pages hosts the app files; it does not provide a shared database for this version.
+## Important limitations
+- Cloud backup is one Firestore document and the app stops before upload if the serialized data is approximately 900 KB or larger. For larger datasets, use a future chunked backup implementation.
+- Automatic backup requires an active internet connection and a signed-in Firebase user. If offline or signed out, changes remain in this browser's local storage; use **Backup Data** to download a JSON copy.
+- Browser local storage is device/browser-specific. Cloud restore is the method for transferring records to another device.
+- Test a manual backup and restore with sample data before relying on it for important academic records.
